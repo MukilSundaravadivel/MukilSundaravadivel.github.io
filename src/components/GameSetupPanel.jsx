@@ -35,6 +35,31 @@ function WordField({ field, value, onChange }) {
   );
 }
 
+function WordSourceSelect({ value, onChange }) {
+  function changeSource(event) {
+    onChange(event.target.value);
+  }
+
+  // Preserve multiline JSX elements when running Prettier.
+  // prettier-ignore
+  return (
+    <label className="word-source">
+      Word source
+      <select value={value} onChange={changeSource}>
+        <option value="custom">
+          My own words
+        </option>
+        <option value="random">
+          Random words (API)
+        </option>
+        <option value="genshin">
+          Random Genshin characters
+        </option>
+      </select>
+    </label>
+  );
+}
+
 function PlayerNameField({ index, name, onChange }) {
   const playerLabel = `Player ${index + 1}`;
   function handleChange(event) {
@@ -118,7 +143,10 @@ export default function GameSetupPanel({
   playerCount,
   names,
   words,
+  wordSource,
+  isLoading,
   error,
+  onWordSourceChange,
   onCountChange,
   onNameChange,
   onWordChange,
@@ -139,42 +167,65 @@ export default function GameSetupPanel({
           01 / SETUP
         </span>
       </div>
-      <form onSubmit={onStartRound}>
-        <div className="word-fields">
-          <WordField
-            field={WORD_FIELDS[0]}
-            value={words[0]}
-            onChange={changeGroupWord}
+      <form onSubmit={onStartRound} aria-busy={isLoading}>
+        <fieldset className="setup-fields" disabled={isLoading}>
+          <WordSourceSelect
+            value={wordSource}
+            onChange={onWordSourceChange}
           />
-          <WordField
-            field={WORD_FIELDS[1]}
-            value={words[1]}
-            onChange={changeImposterWord}
+          {wordSource === "custom" ? (
+            <div className="word-fields">
+              <WordField
+                field={WORD_FIELDS[0]}
+                value={words[0]}
+                onChange={changeGroupWord}
+              />
+              <WordField
+                field={WORD_FIELDS[1]}
+                value={words[1]}
+                onChange={changeImposterWord}
+              />
+            </div>
+          ) : null}
+          {wordSource === "random" && (
+            <p className="hint">
+              We’ll pick two random words when you deal. They might not be related.
+            </p>
+          )}
+          {wordSource === "genshin" && (
+            <p className="hint">
+              We’ll pick two different Genshin characters when you deal.
+            </p>
+          )}
+          <PlayerFields
+            playerCount={playerCount}
+            names={names}
+            onCountChange={onCountChange}
+            onNameChange={onNameChange}
           />
-        </div>
-        <PlayerFields
-          playerCount={playerCount}
-          names={names}
-          onCountChange={onCountChange}
-          onNameChange={onNameChange}
-        />
-        {playerCount < 3 && (
-          <p className="hint">
-            The guessing game works best with 3 or more players.
-            {playerCount === 1 &&
-              " With one player, the card gets the imposter word."}
+          {playerCount < 3 && (
+            <p className="hint">
+              The guessing game works best with 3 or more players.
+              {playerCount === 1 &&
+                " With one player, the card gets the imposter word."}
+            </p>
+          )}
+          {error && (
+            <p className="error" role="alert">
+              {error}
+            </p>
+          )}
+          <div className="panel-footer">
+            <button className="primary" type="submit" disabled={isLoading}>
+              {isLoading ? "Getting words…" : "Deal the cards ↗"}
+            </button>
+          </div>
+        </fieldset>
+        {isLoading && (
+          <p className="hint" role="status">
+            Getting random words…
           </p>
         )}
-        {error && (
-          <p className="error" role="alert">
-            {error}
-          </p>
-        )}
-        <div className="panel-footer">
-          <button className="primary" type="submit">
-            Deal the cards ↗
-          </button>
-        </div>
       </form>
     </section>
   );

@@ -2,11 +2,15 @@ import { useState } from "react";
 import GameRound from "../components/GameRound.jsx";
 import GameResults from "../components/GameResults.jsx";
 import GameSetupPanel from "../components/GameSetupPanel.jsx";
+import useRandomWords from "../hooks/useRandomWords.js";
+import { selectRandomGenshinCharacters } from "../services/genshinCharacters.js";
 
 export default function ImposterGame() {
   const [playerCount, setPlayerCount] = useState(4);
   const [playerNames, setPlayerNames] = useState(Array(10).fill(""));
   const [words, setWords] = useState(["", ""]);
+  const [wordSource, setWordSource] = useState("custom");
+  const randomWords = useRandomWords();
   const [round, setRound] = useState(null);
   const [screen, setScreen] = useState("setup");
   const [revealedIndex, setRevealedIndex] = useState(null);
@@ -28,12 +32,19 @@ export default function ImposterGame() {
     });
   }
 
+  function changeWordSource(value) {
+    setWordSource(value);
+    setError("");
+    randomWords.clearError();
+  }
+
   function resetRound() {
     setRound(null);
     setScreen("setup");
     setRevealedIndex(null);
     setWords(["", ""]);
     setError("");
+    randomWords.clearError();
   }
 
   function showResults() {
@@ -41,13 +52,35 @@ export default function ImposterGame() {
     setScreen("results");
   }
 
-  function toggleCard(index) {
-    setRevealedIndex((currentIndex) => (currentIndex === index ? null : index));
+  function revealCard(index) {
+    setRevealedIndex(index);
   }
 
-  function startRound(event) {
+  function hideCard(index) {
+    setRevealedIndex((currentIndex) =>
+      currentIndex === index ? null : currentIndex,
+    );
+  }
+
+  async function startRound(event) {
     event.preventDefault();
-    const [groupWord, imposterWord] = words.map((word) => word.trim());
+    if (randomWords.isLoading) return;
+    setError("");
+
+    let selectedWords = words;
+    if (wordSource === "random") {
+      selectedWords = await randomWords.loadWords();
+    } else if (wordSource === "genshin") {
+      try {
+        selectedWords = selectRandomGenshinCharacters();
+      } catch (selectionError) {
+        setError(selectionError.message);
+        return;
+      }
+    }
+    if (!selectedWords) return;
+
+    const [groupWord, imposterWord] = selectedWords.map((word) => word.trim());
     if (!groupWord || !imposterWord) {
       setError("Enter both words to deal the cards.");
       return;
@@ -84,7 +117,8 @@ export default function ImposterGame() {
           cards={round.cards}
           startingPlayer={round.startingPlayer}
           revealedIndex={revealedIndex}
-          onToggleCard={toggleCard}
+          onRevealCard={revealCard}
+          onHideCard={hideCard}
           onShowResults={showResults}
         />
       )}
@@ -101,7 +135,10 @@ export default function ImposterGame() {
           playerCount={playerCount}
           names={playerNames}
           words={words}
-          error={error}
+          wordSource={wordSource}
+          isLoading={randomWords.isLoading}
+          error={error || randomWords.error}
+          onWordSourceChange={changeWordSource}
           onCountChange={setPlayerCount}
           onNameChange={changePlayerName}
           onWordChange={changeWord}

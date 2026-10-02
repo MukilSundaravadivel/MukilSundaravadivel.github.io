@@ -46,3 +46,23 @@ Do not publish the source `index.html` directly: it references JSX source that
 must be compiled by Vite. See https://vite.dev/guide/static-deploy#github-pages.
 
 Each browser runs independently; there is no shared game state between devices.
+
+## Genshin character list
+
+The Imposter setup has a **Word source** dropdown for custom words, random
+words from the API, or random Genshin characters.
+
+Paste character names into the template string in
+`src/data/genshinCharacters.js`, one name per line, without quotes or commas.
+The list is intentionally empty for you to fill in. For example:
+
+```js
+export const GENSHIN_CHARACTER_LIST = `
+Amber
+Kaeya
+Lisa
+`;
+```
+
+Blank lines and duplicate names are ignored. Add at least two distinct names.
+Each Genshin round picks two different characters locally, without an API call.

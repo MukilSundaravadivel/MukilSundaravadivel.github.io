@@ -1,17 +1,65 @@
-function PlayerCard({ card, index, isRevealed, onToggle }) {
+import { useEffect } from "react";
+
+function PlayerCard({ card, index, isRevealed, onReveal, onHide }) {
   const className = isRevealed ? "card is-flipped" : "card";
   const accessibleLabel = isRevealed
-    ? `${card.name}: ${card.word}. Click to hide.`
-    : `${card.name}. Click to reveal your word.`;
-  function toggleCard() {
-    onToggle(index);
+    ? `${card.name}: ${card.word}. Release to hide.`
+    : `${card.name}. Hold to reveal your word.`;
+
+  useEffect(() => {
+    if (!isRevealed) return;
+
+    function hideCard() {
+      onHide(index);
+    }
+
+    window.addEventListener("blur", hideCard);
+    document.addEventListener("visibilitychange", hideCard);
+    return () => {
+      window.removeEventListener("blur", hideCard);
+      document.removeEventListener("visibilitychange", hideCard);
+    };
+  }, [isRevealed, index, onHide]);
+
+  function revealOnPointerDown(event) {
+    if (!event.isPrimary || event.button !== 0) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    onReveal(index);
+  }
+
+  function hideCard() {
+    onHide(index);
+  }
+
+  function revealOnKeyDown(event) {
+    if (event.key !== " " && event.key !== "Enter") return;
+    event.preventDefault();
+    if (!event.repeat) onReveal(index);
+  }
+
+  function hideOnKeyUp(event) {
+    if (event.key !== " " && event.key !== "Enter") return;
+    event.preventDefault();
+    hideCard();
+  }
+
+  function preventContextMenu(event) {
+    event.preventDefault();
   }
   // Preserve multiline JSX elements when running Prettier.
   // prettier-ignore
   return (
     <button
       className={className}
-      onClick={toggleCard}
+      type="button"
+      onPointerDown={revealOnPointerDown}
+      onPointerUp={hideCard}
+      onPointerCancel={hideCard}
+      onLostPointerCapture={hideCard}
+      onKeyDown={revealOnKeyDown}
+      onKeyUp={hideOnKeyUp}
+      onBlur={hideCard}
+      onContextMenu={preventContextMenu}
       aria-pressed={isRevealed}
       aria-label={accessibleLabel}
     >
@@ -27,7 +75,7 @@ function PlayerCard({ card, index, isRevealed, onToggle }) {
             {card.name}
           </strong>
           <span className="card-hint">
-            Tap to reveal ↗
+            Hold to reveal
           </span>
         </span>
         <span className="card-back" aria-hidden={!isRevealed}>
@@ -38,7 +86,7 @@ function PlayerCard({ card, index, isRevealed, onToggle }) {
             {isRevealed && card.word}
           </strong>
           <span className="card-hint">
-            Keep it secret. Tap to hide.
+            Release to hide.
           </span>
         </span>
       </span>
@@ -50,7 +98,8 @@ export default function GameRound({
   cards,
   startingPlayer,
   revealedIndex,
-  onToggleCard,
+  onRevealCard,
+  onHideCard,
   onShowResults,
 }) {
   // Preserve multiline JSX elements when running Prettier.
@@ -63,8 +112,8 @@ export default function GameRound({
         </span>
       </div>
       <p className="round-instructions">
-        Find your name, tap your card, and take a quiet peek. Tap again to hide
-        it before passing the screen.
+        Hold your card to see your word. Release to hide it before passing
+        the screen.
       </p>
       <div className="cards">
         {cards.map((card, index) => (
@@ -73,7 +122,8 @@ export default function GameRound({
             card={card}
             index={index}
             isRevealed={revealedIndex === index}
-            onToggle={onToggleCard}
+            onReveal={onRevealCard}
+            onHide={onHideCard}
           />
         ))}
       </div>

@@ -140,6 +140,30 @@ h2 {
   white-space: nowrap;
 }
 
+.setup-fields {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.word-source {
+  display: block;
+  margin: 24px 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+.word-source select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin-top: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  color: var(--text);
+  background: var(--input);
+  font-size: 16px;
+}
 .word-fields {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -365,6 +389,9 @@ h3 {
   margin: 28px 0;
 }
 .card {
+  touch-action: none;
+  user-select: none;
+  -webkit-touch-callout: none;
   padding: 0;
   border: none;
   background: transparent;

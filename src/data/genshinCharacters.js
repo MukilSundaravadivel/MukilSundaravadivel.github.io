@@ -1,0 +1,126 @@
+// Paste your Genshin character list between the backticks below.
+// Use one character name per line, without quotes or commas.
+// Blank lines and duplicate names are ignored. At least two names are needed.
+export const GENSHIN_CHARACTER_LIST = `
+  Albedo
+  Alhaitham
+  Aloy
+  Arlecchino
+  Ayaka
+  Ayato
+  Baizhu
+  Chasca
+  Childe
+  Chiori
+  Citlali
+  Clorinde
+  Columbina
+  Cyno
+  Dehya
+  Diluc
+  Durin
+  Emilie
+  Escoffier
+  Eula
+  Flins
+  Furina
+  Ganyu
+  Hu Tao
+  Ineffa
+  Itto
+  Jean
+  Kazuha
+  Keqing
+  Kinich
+  Klee
+  Kokomi
+  Lauma
+  Linnea
+  Lohen
+  Lyney
+  Mavuika
+  Mona
+  Mualani
+  Nahida
+  Navia
+  Nefer
+  Neuvillette
+  Nicole
+  Nilou
+  Odette
+  Qiqi
+  Raiden
+  Sandrone
+  Shenhe
+  Sigewinne
+  Skirk
+  Tighnari
+  Traveler
+  Varesa
+  Varka
+  Venti
+  Vesna
+  Vodyanitsa
+  Wanderer
+  Wriothesley
+  Xianyun
+  Xiao
+  Xilonen
+  Yae Miko
+  Yelan
+  Yoimiya
+  Yumemizuki Mizuki
+  Zhongli
+  Zibai
+  Aino
+  Alyosha
+  Amber
+  Barbara
+  Beidou
+  Bennett
+  Candace
+  Charlotte
+  Chevreuse
+  Chongyun
+  Collei
+  Dahlia
+  Diona
+  Dori
+  Faruzan
+  Fischl
+  Freminet
+  Gaming
+  Gorou
+  Heizou
+  Iansan
+  Ifa
+  Illuga
+  Jahoda
+  Kachina
+  Kaeya
+  Kaveh
+  Kirara
+  Kuki Shinobu
+  Lan Yan
+  Layla
+  Lisa
+  Lynette
+  Mika
+  Ningguang
+  Noelle
+  Ororon
+  Prune
+  Razor
+  Rosaria
+  Sara
+  Sayu
+  Sethos
+  Sucrose
+  Thoma
+  Xiangling
+  Xingqiu
+  Xinyan
+  Yanfei
+  Yaoyao
+  Yun Jin
+`;
