@@ -11,6 +11,7 @@ npm run dev
 
 Open the URL printed by Vite. Edit `src/tools/GameSetup.jsx` for the first tool,
 `src/App.jsx` for the main screen, and `src/App.css` for styling.
+
 Add future tools as components in `src/tools/`.
 
 ## Check and build
