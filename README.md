@@ -1,68 +1,37 @@
 # Game tools
 
-A small React + Vite site using JavaScript and plain CSS, with no backend.
+A small collection of browser tools for playing games with my friends. It helps
+with a few simple things, like handing out secret words or picking a random
+number.
 
-## Develop
+The app currently includes:
+
+- **Imposter:** Set up players and give everyone a word, with one player getting
+  a different one. Players can reveal their cards individually, and the app
+  picks someone to go first. Use your own words, random words, or Genshin
+  character names, then reveal the imposter when the round is over.
+- **Random number:** Pick a whole number between a minimum and maximum you choose.
+
+Each browser runs its own game, so everyone playing an Imposter round should
+use the same device. There are no accounts or shared rooms.
+
+It's a little React and Vite app, made for casual use.
+
+## Development
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open the URL printed by Vite. Edit `src/tools/GameSetup.jsx` for the first tool,
-`src/App.jsx` for the main screen, and `src/App.css` for styling.
+Open the URL printed by Vite. Tools live in `src/tools/`, with the main screen
+in `src/App.jsx` and styles in `src/App.css`.
 
-Add future tools as components in `src/tools/`.
+Use `npm run lint`, `npm test`, and `npm run format:check` to check changes.
+Run `npm run build` to create `dist/`, and `npm run preview` to try the build locally.
 
-## Check and build
+## Deployment
 
-```bash
-npm run lint
-npm run build
-npm run preview
-```
-
-Publish the generated `dist/` folder to a static host.
-
-## GitHub Pages
-
-This repository includes `.github/workflows/deploy.yml`, which builds the app
-and publishes `dist/` whenever you push to `main`.
-
-1. In the GitHub repository, open **Settings → Pages**.
-2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
-3. Commit and push the workflow to `main`.
-4. Wait for **Deploy to GitHub Pages** in the **Actions** tab to finish, then open
-   https://MukilSundaravadivel.github.io/.
-
-If the workflow is already on GitHub, you can also select it in the Actions tab
-and click **Run workflow**.
-
-The default Vite base path (`/`) is correct for this user site. If you move the
-site to `username.github.io/repository/`, set `base: '/repository/'` in
-`vite.config.js`.
-
-Do not publish the source `index.html` directly: it references JSX source that
-must be compiled by Vite. See https://vite.dev/guide/static-deploy#github-pages.
-
-Each browser runs independently; there is no shared game state between devices.
-
-## Genshin character list
-
-The Imposter setup has a **Word source** dropdown for custom words, random
-words from the API, or random Genshin characters.
-
-Paste character names into the template string in
-`src/data/genshinCharacters.js`, one name per line, without quotes or commas.
-The list is intentionally empty for you to fill in. For example:
-
-```js
-export const GENSHIN_CHARACTER_LIST = `
-Amber
-Kaeya
-Lisa
-`;
-```
-
-Blank lines and duplicate names are ignored. Add at least two distinct names.
-Each Genshin round picks two different characters locally, without an API call.
+The GitHub Pages workflow builds and deploys on pushes to `main`. Set the
+repository's Pages source to **GitHub Actions**. For other static hosts,
+publish the built `dist/` folder.
