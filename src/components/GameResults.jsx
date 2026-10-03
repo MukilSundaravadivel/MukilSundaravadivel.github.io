@@ -1,5 +1,5 @@
 export default function GameResults({
-  imposterName,
+  imposterNames,
   groupWord,
   imposterWord,
   onResetRound,
@@ -16,10 +16,10 @@ export default function GameResults({
       <dl className="round-results">
         <div>
           <dt>
-            The imposter
+            {imposterNames.length === 1 ? "The imposter" : "The imposters"}
           </dt>
           <dd>
-            {imposterName}
+            {imposterNames.join(", ")}
           </dd>
         </div>
         <div>

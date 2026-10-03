@@ -68,9 +68,6 @@ function PlayerCard({ card, index, isRevealed, onReveal, onHide }) {
           <span className="card-number">
             PLAYER {String(index + 1).padStart(2, "0")}
           </span>
-          <span className="card-symbol" aria-hidden="true">
-            ✳
-          </span>
           <strong>
             {card.name}
           </strong>
@@ -96,6 +93,7 @@ function PlayerCard({ card, index, isRevealed, onReveal, onHide }) {
 
 export default function GameRound({
   cards,
+  imposterCount,
   startingPlayer,
   revealedIndex,
   onRevealCard,
@@ -135,7 +133,7 @@ export default function GameRound({
       </p>
       <div className="panel-footer">
         <span>
-          {cards.length} players · 1 imposter · trust no one
+          {cards.length} players · {imposterCount} {imposterCount === 1 ? "imposter" : "imposters"} · trust no one
         </span>
         <button className="primary" onClick={onShowResults}>
           Reveal results ↗

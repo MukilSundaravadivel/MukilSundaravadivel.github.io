@@ -6,10 +6,10 @@ number.
 
 The app currently includes:
 
-- **Imposter:** Set up players and give everyone a word, with one player getting
-  a different one. Players can reveal their cards individually, and the app
+- **Imposter:** Set up up to 20 players and choose how many imposters get
+  a different word. Players can reveal their cards individually, and the app
   picks someone to go first. Use your own words, random words, or Genshin
-  character names, then reveal the imposter when the round is over.
+  character names, then reveal the imposters when the round is over.
 - **Random number:** Pick a whole number between a minimum and maximum you choose.
 
 Each browser runs its own game, so everyone playing an Imposter round should

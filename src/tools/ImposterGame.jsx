@@ -4,10 +4,16 @@ import GameResults from "../components/GameResults.jsx";
 import GameSetupPanel from "../components/GameSetupPanel.jsx";
 import useRandomWords from "../hooks/useRandomWords.js";
 import { selectRandomGenshinCharacters } from "../services/genshinCharacters.js";
+import {
+  MAX_PLAYERS,
+  createImposterRound,
+  getMaximumImposters,
+} from "./imposterRound.js";
 
 export default function ImposterGame() {
   const [playerCount, setPlayerCount] = useState(4);
-  const [playerNames, setPlayerNames] = useState(Array(10).fill(""));
+  const [playerNames, setPlayerNames] = useState(Array(MAX_PLAYERS).fill(""));
+  const [imposterCount, setImposterCount] = useState(1);
   const [words, setWords] = useState(["", ""]);
   const [wordSource, setWordSource] = useState("custom");
   const randomWords = useRandomWords();
@@ -15,6 +21,13 @@ export default function ImposterGame() {
   const [screen, setScreen] = useState("setup");
   const [revealedIndex, setRevealedIndex] = useState(null);
   const [error, setError] = useState("");
+
+  function changePlayerCount(value) {
+    setPlayerCount(value);
+    setImposterCount((currentCount) =>
+      Math.min(currentCount, getMaximumImposters(value)),
+    );
+  }
 
   function changePlayerName(index, value) {
     setPlayerNames((currentNames) => {
@@ -89,20 +102,14 @@ export default function ImposterGame() {
       setError("Choose two different words so there is an imposter.");
       return;
     }
-    const imposterIndex = Math.floor(Math.random() * playerCount);
-    const roundCards = Array.from({ length: playerCount }, (_, index) => {
-      const name = playerNames[index].trim() || `Player ${index + 1}`;
-      const word = index === imposterIndex ? imposterWord : groupWord;
-      return { name, word };
-    });
-    const startingPlayerIndex = Math.floor(Math.random() * roundCards.length);
-    setRound({
-      cards: roundCards,
-      startingPlayer: roundCards[startingPlayerIndex].name,
-      imposterName: roundCards[imposterIndex].name,
+    const nextRound = createImposterRound({
+      playerCount,
+      imposterCount,
+      playerNames,
       groupWord,
       imposterWord,
     });
+    setRound(nextRound);
     setScreen("play");
     setRevealedIndex(null);
     setError("");
@@ -115,6 +122,7 @@ export default function ImposterGame() {
       {screen === "play" && (
         <GameRound
           cards={round.cards}
+          imposterCount={round.imposterNames.length}
           startingPlayer={round.startingPlayer}
           revealedIndex={revealedIndex}
           onRevealCard={revealCard}
@@ -124,7 +132,7 @@ export default function ImposterGame() {
       )}
       {screen === "results" && (
         <GameResults
-          imposterName={round.imposterName}
+          imposterNames={round.imposterNames}
           groupWord={round.groupWord}
           imposterWord={round.imposterWord}
           onResetRound={resetRound}
@@ -133,13 +141,15 @@ export default function ImposterGame() {
       {screen === "setup" && (
         <GameSetupPanel
           playerCount={playerCount}
+          imposterCount={imposterCount}
           names={playerNames}
           words={words}
           wordSource={wordSource}
           isLoading={randomWords.isLoading}
           error={error || randomWords.error}
           onWordSourceChange={changeWordSource}
-          onCountChange={setPlayerCount}
+          onCountChange={changePlayerCount}
+          onImposterCountChange={setImposterCount}
           onNameChange={changePlayerName}
           onWordChange={changeWord}
           onStartRound={startRound}
